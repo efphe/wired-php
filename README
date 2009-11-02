@@ -1,0 +1,39 @@
+Hello, thank you for downloading wired-php!
+
+*
+** Introduction 
+
+  Wired-php is a web services client (xmlrpc protocol)
+  to make reservations on line using WuBook Provider
+  (http://wubook.net).
+
+  You will need xmlrpc library installed:
+   
+   http://phpxmlrpc.sourceforge.net/
+
+  Note: this is my first php work. If you encounter
+  an improvable style, be conscious of that.
+
+  If you want to contribute, simply contact me!
+
+*
+** Usage
+
+  To discover how to use this library, please, refer
+  directly to source code.
+
+  wbxclient contains at the bottom a detailed HowTo.
+  More documention is coming asap.
+
+*
+** Author
+
+  If you want to contact me, write at the following
+  address:
+
+    xmlrpc@wubook.net
+
+  by Yellow (at) wubook (dot) net
+
+
+
