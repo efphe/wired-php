@@ -12,7 +12,7 @@
  *
  * @since         v 1.0
  * @version       v 1.0
- * @author	Marco Pergola (marco.pergola dot gmail.com)
+ * @author	Marco Pergola (marco.pergola at gmail dot com)
  * @lastmodified  03/11/2009
  */
  
@@ -317,7 +317,7 @@ class WuBook {
     function book_last_request($customer, $credit_card = array(), $iata = array()) {
         
         $params = array($customer, $credit_card, $iata);        
-        $items = $this->call_method('book_last_request', $params);
+        return $this->call_method('book_last_request', $params);
         
     }
     
