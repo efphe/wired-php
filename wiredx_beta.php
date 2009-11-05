@@ -13,7 +13,7 @@
  * @since         v 1.0
  * @version       v 1.0
  * @author	Marco Pergola (marco.pergola at gmail dot com)
- * @lastmodified  03/11/2009
+ * @lastmodified  05/11/2009
  */
  
  
@@ -26,55 +26,54 @@ include("xmlrpc.inc");
 class WuBook {
 
 	/**
-	 * List of errors
-	 *
-	 * @var array
-	 * @access public
-	 */
+	* List of errors
+	*
+	* @var array
+	* @access public
+	*/
     var $errors = array();
 	
 	/**
-	 * Name of Wubook account
-	 *
-	 * @var string
-	 * @access public
-	 */
+	* Name of Wubook account
+	*
+	* @var string
+	* @access public
+	*/
     var $account;
 	
 	/**
-	 * Password of Wubook account
-	 *
-	 * @var string
-	 * @access public
-	 */
+	* Password of Wubook account
+	*
+	* @var string
+	* @access public
+	*/
     var $password;
     
 	/**
-	 * Token released from Wubook server
-	 *
-	 * @var string
-	 * @access public
-	 */
+	* Token released from Wubook server
+	*
+	* @var string
+	* @access public
+	*/
     var $token = null;   
     
 	/**
-	 * Xml- rpc Client
-	 *
-	 * @var object
-	 * @access private
-	 */
+	* Xml- rpc Client
+	*
+	* @var object
+	* @access private
+	*/
     private $xmlrpc_client = null;
 	
-	var $facilities = array();
-    var $facility;
+    //var $facility;
 	
 	
     /**
-	 * Credit Cards information
-	 *
-	 * @var array
-	 * @access public
-	 */
+	* Credit Cards information
+	*
+	* @var array
+	* @access public
+	*/
     var $cc_family = array (
         1 => array('name'=>'Visa', 'cvv'=>1),
         2 => array('name'=>'MasterCard', 'cvv'=>1),
@@ -92,11 +91,11 @@ class WuBook {
 	
 	
     /**
-	 * Constructor. Initialize xml-rpc client, accoutn e password
-	 *
-	 * @param string $account Account name
-	 * @param string $password Account password
-	 */
+	* Constructor. Initialize xml-rpc client, accoutn e password
+	*
+	* @param string $account Account name
+	* @param string $password Account password
+	*/
     function __construct($account, $password = null) {
         
         $this->xmlrpc_client = new xmlrpc_client('/xrwx/', 'wubook.net', '443', 'https');
@@ -208,8 +207,7 @@ class WuBook {
             }
         }
         
-        $this->facilities = $facilities;        
-        return $this->facilities;
+        return $facilities;
 
     }
     
@@ -234,10 +232,10 @@ class WuBook {
         $facility['id'] = $lcode;
         $facility['rooms'] = $item[0];
         $facility['grouped_rooms'] = $item[1];
-        $facility['addons'] = $item[2];
+        $facility['opps'] = $item[2];
         $facility['offers'] = $item[3];
         
-        $this->facility = $facility;
+        //$this->facility = $facility;
         
         return $facility;        
     }
@@ -264,22 +262,20 @@ class WuBook {
 	* 
 	* @access public
 	*/
-    function room_request($lcode, $rooms = array()) {
-        
-        if (!$this->facility) {
-            return false;
-        }
+    function rooms_request($lcode, $rooms, $opps = array(), $customer_code = null, $iata_code = null) {
         
         foreach ($rooms as $key=>$value) {            
             $room_reservations[] = array('number'=>$value, 'id'=>$key);            
         }
     
-        $params = array($lcode, $room_reservations, array());        
-        $items = $this->call_method('rooms_request', $params);
-        
-        return $items;
+        $params = array($lcode, $room_reservations, $opps, $customer_code, $iata_code);        
+        $room_details = $this->call_method('rooms_request', $params);
+		
+		return $room_details;
+
     }
-    
+	
+   
     /**
 	* Book the last request called by room_request()
 	*
@@ -316,8 +312,8 @@ class WuBook {
 	*/
     function book_last_request($customer, $credit_card = array(), $iata = array()) {
         
-        $params = array($customer, $credit_card, $iata);        
-        return $this->call_method('book_last_request', $params);
+		$params = array($customer, $credit_card, $iata);
+		return $this->call_method('book_last_request', $params);
         
     }
     
