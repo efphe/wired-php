@@ -13,7 +13,7 @@
  * @since         v 1.0
  * @version       v 1.0
  * @author	Marco Pergola (marco.pergola at gmail dot com)
- * @lastmodified  05/11/2009
+ * @lastmodified  19/01/2010
  */
  
  
@@ -64,8 +64,6 @@ class WuBook {
 	* @access private
 	*/
     private $xmlrpc_client = null;
-	
-    //var $facility;
 	
 	
     /**
@@ -141,7 +139,11 @@ class WuBook {
 
         $xmlrpc_response = $this->xmlrpc_client->send($xmlrpc_message);
         
-        return $this->validate_response($xmlrpc_response);
+        $validate_response = $this->validate_response($xmlrpc_response);
+		
+		if (!$validate_response) $this->errors['xmlrpc_message'] = $xmlrpc_message;
+        
+        return $validate_response;
               
     }
     
@@ -191,21 +193,25 @@ class WuBook {
         
         $params = array($lcodes, $dfrom, $dto);        
         $items = $this->call_method('facilities_request', $params);
+		
+		$facilities = array();
         
-        $i = 0;
-        foreach ($items as $key=>$item) {
-            
-            if ($item[0]) {
-                $this->errors[] = array('code' => $item[0], 'message' => $item[1]);
-            } else {
-                $facilities[$i]['id'] = $key;
-                $facilities[$i]['rooms'] = $item[1][0];
-                $facilities[$i]['grouped_rooms'] = $item[1][1];
-                $facilities[$i]['addons'] = $item[1][2];
-                $facilities[$i]['offers'] = $item[1][3];
-                $i++;
-            }
-        }
+		if (!empty($items)) {
+			$i = 0;
+			foreach ($items as $key=>$item) {
+				
+				if ($item[0]) {
+					$this->errors[] = array('code' => $item[0], 'message' => $item[1]);
+				} else {
+					$facilities[$i]['id'] = $key;
+					$facilities[$i]['rooms'] = $item[1][0];
+					$facilities[$i]['grouped_rooms'] = $item[1][1];
+					$facilities[$i]['addons'] = $item[1][2];
+					$facilities[$i]['offers'] = $item[1][3];
+					$i++;
+				}
+			}
+		}
         
         return $facilities;
 
@@ -232,11 +238,9 @@ class WuBook {
         $facility['id'] = $lcode;
         $facility['rooms'] = $item[0];
         $facility['grouped_rooms'] = $item[1];
-        $facility['opps'] = $item[2];
+        $facility['addons'] = $item[2];
         $facility['offers'] = $item[3];
-        
-        //$this->facility = $facility;
-        
+                
         return $facility;        
     }
     
